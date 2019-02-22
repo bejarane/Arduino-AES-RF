@@ -20,7 +20,7 @@ The procedure is as follows:
   - 2. Decrypt incoming stream and print original stream for testing.
   - 3. Parse decrypted variable without using method provided in AES library.
 
-## Remarkable points
+## Remarkable stuff
 - The maximum size of the data string that can be sended in one stream by the RadioHead library configuration is 60 chars, for the actual driver selected. It is said in documentation that it can be tuned for a bigger size, but it is not recommended.
 - The AES library uses blocks of 4x4 to encrypt the data. This limits the size of the sending array in multiples of 16. Taking into consideration the information provided above, it is not possible to send more than 48 bytes in one stream with vanilla libraries. They could be tuned to expand this capacity.
 - Both devices, master and slave, print debug in Serial Console to allow data check and comparison. Those prints should be deleted for production.
