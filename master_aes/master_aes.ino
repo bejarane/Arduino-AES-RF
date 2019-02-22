@@ -29,25 +29,46 @@ void setup()
   Serial.print(F("MaxChar:"));
   max_payload = (driver.maxMessageLength()/N_BLOCK)*N_BLOCK;
   Serial.println(max_payload);
+
+  Serial.println(F("Type data and press enter:"));
   
   
 }
 
 void loop()
 { 
-  byte data[60] = ""; //variable for the data to send
-  byte message[] = "This string was decoded Cant be bigger than 46";//the string we are going to send
-  strcpy(data,message); //just a string copy
-  byte data_l = strlen(data)+1; //the +1 is for saving the length of null terminator in the string
-  Serial.print(F("Payload:"));
-  Serial.println(data_l);
-  
-  if (data_l<max_payload){
-    send_encrypted(data,128,data_l);
-  }else{
-    Serial.println(F("Exceeded RHlibrary maxpayload"));
-  }  
-  delay(2000); 
+  char data[128]=""; //arduino max buffer is 128bytes
+  byte bytes = 0;
+  if(Serial.available())
+  {
+    while(Serial.available()>0)
+    {
+      char buff;
+      buff = Serial.read();
+      if (buff != 0x0A && buff != 0x0D)
+      {
+        data [bytes] = buff;
+        ++bytes; 
+      }
+      delay(10);
+    }
+    data [bytes] = 0x0;
+    Serial.println(data);
+      
+    //byte data[60] = ""; //variable for the data to send
+    //byte message[] = "This string was Cant be bigger than 46";//the string we are going to send
+    //strcpy(data,message); //just a string copy
+    
+    byte data_l = strlen(data)+1; //the +1 is for saving the length of null terminator in the string
+    Serial.print(F("Payload:"));
+    Serial.println(data_l);
+    
+    if (data_l<max_payload){
+      send_encrypted(data,128,data_l);
+    }else{
+      Serial.println(F("Exceeded RHlibrary maxpayload"));
+    }
+  }
 }
 
 void send_encrypted(char* data,byte bits, byte length){
